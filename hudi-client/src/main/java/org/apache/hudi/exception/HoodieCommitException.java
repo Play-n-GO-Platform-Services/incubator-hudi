@@ -19,8 +19,7 @@
 package org.apache.hudi.exception;
 
 /**
- * <p>
- * Exception thrown for any higher level errors when <code>HoodieClient</code> is doing a Commit
+ * <p> Exception thrown for any higher level errors when <code>HoodieClient</code> is doing a Commit
  * </p>
  */
 public class HoodieCommitException extends HoodieException {

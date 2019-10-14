@@ -52,7 +52,8 @@ public class HoodieFileGroupId implements Serializable {
       return false;
     }
     HoodieFileGroupId that = (HoodieFileGroupId) o;
-    return Objects.equals(partitionPath, that.partitionPath) && Objects.equals(fileId, that.fileId);
+    return Objects.equals(partitionPath, that.partitionPath)
+        && Objects.equals(fileId, that.fileId);
   }
 
   @Override
@@ -62,6 +63,9 @@ public class HoodieFileGroupId implements Serializable {
 
   @Override
   public String toString() {
-    return "HoodieFileGroupId{" + "partitionPath='" + partitionPath + '\'' + ", fileId='" + fileId + '\'' + '}';
+    return "HoodieFileGroupId{"
+        + "partitionPath='" + partitionPath + '\''
+        + ", fileId='" + fileId + '\''
+        + '}';
   }
 }

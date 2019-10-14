@@ -20,6 +20,7 @@
 
 # Create host mount directory and copy
 mkdir -p /tmp/hadoop_name
+ echo "Folder created"
 mkdir -p /tmp/hadoop_data
 
 WS_ROOT=`dirname $PWD`

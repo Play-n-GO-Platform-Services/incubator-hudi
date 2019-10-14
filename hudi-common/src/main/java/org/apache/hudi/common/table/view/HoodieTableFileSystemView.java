@@ -40,7 +40,6 @@ import org.apache.log4j.Logger;
 
 /**
  * TableFileSystemView Implementations based on in-memory storage.
- * 
  * @see TableFileSystemView
  * @since 0.3.0
  */
@@ -116,11 +115,13 @@ public class HoodieTableFileSystemView extends IncrementalTimelineSyncFileSystem
    *
    * @deprecated
    */
-  private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+  private void readObject(java.io.ObjectInputStream in)
+      throws IOException, ClassNotFoundException {
     in.defaultReadObject();
   }
 
-  private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+  private void writeObject(java.io.ObjectOutputStream out)
+      throws IOException {
     out.defaultWriteObject();
   }
 
@@ -132,9 +133,10 @@ public class HoodieTableFileSystemView extends IncrementalTimelineSyncFileSystem
   @Override
   protected void resetPendingCompactionOperations(Stream<Pair<String, CompactionOperation>> operations) {
     // Build fileId to Pending Compaction Instants
-    this.fgIdToPendingCompaction = createFileIdToPendingCompactionMap(operations.map(entry -> {
-      return Pair.of(entry.getValue().getFileGroupId(), Pair.of(entry.getKey(), entry.getValue()));
-    }).collect(Collectors.toMap(Pair::getKey, Pair::getValue)));
+    this.fgIdToPendingCompaction = createFileIdToPendingCompactionMap(
+        operations.map(entry -> {
+          return Pair.of(entry.getValue().getFileGroupId(), Pair.of(entry.getKey(),entry.getValue()));
+        }).collect(Collectors.toMap(Pair::getKey, Pair::getValue)));
   }
 
   @Override
@@ -159,8 +161,8 @@ public class HoodieTableFileSystemView extends IncrementalTimelineSyncFileSystem
   }
 
   /**
-   * Given a partition path, obtain all filegroups within that. All methods, that work at the partition level go through
-   * this.
+   * Given a partition path, obtain all filegroups within that. All methods, that work at the
+   * partition level go through this.
    */
   @Override
   Stream<HoodieFileGroup> fetchAllStoredFileGroups(String partition) {

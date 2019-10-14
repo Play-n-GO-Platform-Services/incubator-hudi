@@ -25,23 +25,28 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.hadoop.fs.Path;
-import org.apache.hudi.common.HoodieCommonTestHarness;
 import org.apache.hudi.common.model.HoodieTestUtils;
 import org.apache.hudi.common.table.HoodieTableMetaClient;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 
 /**
  */
-public class TestHoodieROTablePathFilter extends HoodieCommonTestHarness {
+public class TestHoodieROTablePathFilter {
 
+  @Rule
+  public TemporaryFolder tmpFolder = new TemporaryFolder();
+  
+  private HoodieTableMetaClient metaClient;
+  
   @Before
   public void setUp() throws Exception {
-    initMetaClient();
+    this.metaClient = HoodieTestUtils.init(tmpFolder.getRoot().getAbsolutePath());
   }
-
+  
   @Test
   public void testHoodiePaths() throws IOException {
     // Create a temp folder as the base path
@@ -58,29 +63,31 @@ public class TestHoodieROTablePathFilter extends HoodieCommonTestHarness {
     HoodieTestUtils.createDataFile(basePath, "2017/01/01", "003", "f3");
 
     HoodieROTablePathFilter pathFilter = new HoodieROTablePathFilter();
-    Path partitionPath = new Path("file://" + basePath + File.separator + "2017/01/01");
+    Path partitionPath = new Path("file://" + basePath + "/" + "2017/01/01");
     assertTrue("Directories should be accepted", pathFilter.accept(partitionPath));
 
-    assertTrue(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "001", "f1"))));
-    assertFalse(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "001", "f2"))));
-    assertTrue(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "001", "f3"))));
-    assertTrue(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "002", "f2"))));
-    assertFalse(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "003", "f3"))));
+    assertTrue(pathFilter.accept(new Path(
+        "file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "001", "f1"))));
+    assertFalse(pathFilter.accept(new Path(
+        "file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "001", "f2"))));
+    assertTrue(pathFilter.accept(new Path(
+        "file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "001", "f3"))));
+    assertTrue(pathFilter.accept(new Path(
+        "file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "002", "f2"))));
+    assertFalse(pathFilter.accept(new Path(
+        "file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "003", "f3"))));
     assertFalse(pathFilter.accept(new Path("file:///" + HoodieTestUtils.getCommitFilePath(basePath, "001"))));
     assertFalse(pathFilter.accept(new Path("file:///" + HoodieTestUtils.getCommitFilePath(basePath, "002"))));
-    assertFalse(pathFilter.accept(new Path("file:///" + HoodieTestUtils.getInflightCommitFilePath(basePath, "003"))));
-    assertFalse(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getRequestedCompactionFilePath(basePath, "004"))));
-    assertFalse(pathFilter.accept(new Path("file:///" + basePath + "/" + HoodieTableMetaClient.METAFOLDER_NAME + "/")));
+    assertFalse(pathFilter.accept(new Path("file:///"
+        + HoodieTestUtils.getInflightCommitFilePath(basePath, "003"))));
+    assertFalse(pathFilter.accept(new Path("file:///"
+        + HoodieTestUtils.getRequestedCompactionFilePath(basePath, "004"))));
+    assertFalse(pathFilter.accept(new Path("file:///" + basePath + "/"
+        + HoodieTableMetaClient.METAFOLDER_NAME + "/")));
     assertFalse(pathFilter.accept(new Path("file:///" + basePath + "/" + HoodieTableMetaClient.METAFOLDER_NAME)));
 
-    assertFalse(
-        pathFilter.accept(new Path("file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "003", "f3"))));
+    assertFalse(pathFilter.accept(new Path(
+        "file:///" + HoodieTestUtils.getDataFilePath(basePath, "2017/01/01", "003", "f3"))));
 
   }
 
@@ -91,14 +98,12 @@ public class TestHoodieROTablePathFilter extends HoodieCommonTestHarness {
     String basePath = folder.getRoot().getAbsolutePath();
     HoodieROTablePathFilter pathFilter = new HoodieROTablePathFilter();
 
-    String path = basePath + File.separator + "nonhoodiefolder";
+    String path = basePath + "/" + "nonhoodiefolder";
     new File(path).mkdirs();
     assertTrue(pathFilter.accept(new Path("file:///" + path)));
 
-    path = basePath + File.separator + "nonhoodiefolder/somefile";
+    path = basePath + "/" + "nonhoodiefolder/somefile";
     new File(path).createNewFile();
     assertTrue(pathFilter.accept(new Path("file:///" + path)));
-
-    folder.delete();
   }
 }

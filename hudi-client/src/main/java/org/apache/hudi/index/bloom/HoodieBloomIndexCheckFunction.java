@@ -34,10 +34,11 @@ import org.apache.spark.api.java.function.Function2;
 import scala.Tuple2;
 
 /**
- * Function performing actual checking of RDD partition containing (fileId, hoodieKeys) against the actual files
+ * Function performing actual checking of RDD partition containing (fileId, hoodieKeys) against the
+ * actual files
  */
-public class HoodieBloomIndexCheckFunction
-    implements Function2<Integer, Iterator<Tuple2<String, HoodieKey>>, Iterator<List<KeyLookupResult>>> {
+public class HoodieBloomIndexCheckFunction implements
+    Function2<Integer, Iterator<Tuple2<String, HoodieKey>>, Iterator<List<KeyLookupResult>>> {
 
   private final HoodieTable hoodieTable;
 
@@ -58,12 +59,14 @@ public class HoodieBloomIndexCheckFunction
 
     private HoodieKeyLookupHandle keyLookupHandle;
 
-    LazyKeyCheckIterator(Iterator<Tuple2<String, HoodieKey>> filePartitionRecordKeyTripletItr) {
+    LazyKeyCheckIterator(
+        Iterator<Tuple2<String, HoodieKey>> filePartitionRecordKeyTripletItr) {
       super(filePartitionRecordKeyTripletItr);
     }
 
     @Override
-    protected void start() {}
+    protected void start() {
+    }
 
     @Override
     protected List<HoodieKeyLookupHandle.KeyLookupResult> computeNext() {
@@ -110,6 +113,7 @@ public class HoodieBloomIndexCheckFunction
     }
 
     @Override
-    protected void end() {}
+    protected void end() {
+    }
   }
 }

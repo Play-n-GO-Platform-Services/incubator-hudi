@@ -69,13 +69,12 @@ public class CommitsCommand implements CommandMarker {
   }
 
   @CliCommand(value = "commits show", help = "Show the commits")
-  public String showCommits(
-      @CliOption(key = {"limit"}, mandatory = false, help = "Limit commits",
-          unspecifiedDefaultValue = "-1") final Integer limit,
+  public String showCommits(@CliOption(key = {
+      "limit"}, mandatory = false, help = "Limit commits", unspecifiedDefaultValue = "-1") final Integer limit,
       @CliOption(key = {"sortBy"}, help = "Sorting Field", unspecifiedDefaultValue = "") final String sortByField,
       @CliOption(key = {"desc"}, help = "Ordering", unspecifiedDefaultValue = "false") final boolean descending,
-      @CliOption(key = {"headeronly"}, help = "Print Header Only",
-          unspecifiedDefaultValue = "false") final boolean headerOnly)
+      @CliOption(key = {
+          "headeronly"}, help = "Print Header Only", unspecifiedDefaultValue = "false") final boolean headerOnly)
       throws IOException {
 
     HoodieActiveTimeline activeTimeline = HoodieCLI.tableMetadata.getActiveTimeline();
@@ -85,12 +84,16 @@ public class CommitsCommand implements CommandMarker {
     Collections.reverse(commits);
     for (int i = 0; i < commits.size(); i++) {
       HoodieInstant commit = commits.get(i);
-      HoodieCommitMetadata commitMetadata =
-          HoodieCommitMetadata.fromBytes(timeline.getInstantDetails(commit).get(), HoodieCommitMetadata.class);
-      rows.add(new Comparable[] {commit.getTimestamp(), commitMetadata.fetchTotalBytesWritten(),
-          commitMetadata.fetchTotalFilesInsert(), commitMetadata.fetchTotalFilesUpdated(),
-          commitMetadata.fetchTotalPartitionsWritten(), commitMetadata.fetchTotalRecordsWritten(),
-          commitMetadata.fetchTotalUpdateRecordsWritten(), commitMetadata.fetchTotalWriteErrors()});
+      HoodieCommitMetadata commitMetadata = HoodieCommitMetadata.fromBytes(timeline.getInstantDetails(commit).get(),
+          HoodieCommitMetadata.class);
+      rows.add(new Comparable[]{commit.getTimestamp(),
+          commitMetadata.fetchTotalBytesWritten(),
+          commitMetadata.fetchTotalFilesInsert(),
+          commitMetadata.fetchTotalFilesUpdated(),
+          commitMetadata.fetchTotalPartitionsWritten(),
+          commitMetadata.fetchTotalRecordsWritten(),
+          commitMetadata.fetchTotalUpdateRecordsWritten(),
+          commitMetadata.fetchTotalWriteErrors()});
     }
 
     Map<String, Function<Object, String>> fieldNameToConverterMap = new HashMap<>();
@@ -98,10 +101,15 @@ public class CommitsCommand implements CommandMarker {
       return NumericUtils.humanReadableByteCount((Double.valueOf(entry.toString())));
     });
 
-    TableHeader header = new TableHeader().addTableHeaderField("CommitTime").addTableHeaderField("Total Bytes Written")
-        .addTableHeaderField("Total Files Added").addTableHeaderField("Total Files Updated")
-        .addTableHeaderField("Total Partitions Written").addTableHeaderField("Total Records Written")
-        .addTableHeaderField("Total Update Records Written").addTableHeaderField("Total Errors");
+    TableHeader header = new TableHeader()
+        .addTableHeaderField("CommitTime")
+        .addTableHeaderField("Total Bytes Written")
+        .addTableHeaderField("Total Files Added")
+        .addTableHeaderField("Total Files Updated")
+        .addTableHeaderField("Total Partitions Written")
+        .addTableHeaderField("Total Records Written")
+        .addTableHeaderField("Total Update Records Written")
+        .addTableHeaderField("Total Errors");
     return HoodiePrintHelper.print(header, fieldNameToConverterMap, sortByField, descending, limit, headerOnly, rows);
   }
 
@@ -124,8 +132,8 @@ public class CommitsCommand implements CommandMarker {
     }
 
     SparkLauncher sparkLauncher = SparkUtil.initLauncher(sparkPropertiesPath);
-    sparkLauncher.addAppArgs(SparkMain.SparkCommand.ROLLBACK.toString(), commitTime,
-        HoodieCLI.tableMetadata.getBasePath());
+    sparkLauncher
+        .addAppArgs(SparkMain.SparkCommand.ROLLBACK.toString(), commitTime, HoodieCLI.tableMetadata.getBasePath());
     Process process = sparkLauncher.launch();
     InputStreamConsumer.captureOutput(process);
     int exitCode = process.waitFor();
@@ -138,12 +146,13 @@ public class CommitsCommand implements CommandMarker {
   }
 
   @CliCommand(value = "commit showpartitions", help = "Show partition level details of a commit")
-  public String showCommitPartitions(@CliOption(key = {"commit"}, help = "Commit to show") final String commitTime,
+  public String showCommitPartitions(
+      @CliOption(key = {"commit"}, help = "Commit to show") final String commitTime,
       @CliOption(key = {"limit"}, help = "Limit commits", unspecifiedDefaultValue = "-1") final Integer limit,
       @CliOption(key = {"sortBy"}, help = "Sorting Field", unspecifiedDefaultValue = "") final String sortByField,
       @CliOption(key = {"desc"}, help = "Ordering", unspecifiedDefaultValue = "false") final boolean descending,
-      @CliOption(key = {"headeronly"}, help = "Print Header Only",
-          unspecifiedDefaultValue = "false") final boolean headerOnly)
+      @CliOption(key = {
+          "headeronly"}, help = "Print Header Only", unspecifiedDefaultValue = "false") final boolean headerOnly)
       throws Exception {
 
     HoodieActiveTimeline activeTimeline = HoodieCLI.tableMetadata.getActiveTimeline();
@@ -176,7 +185,8 @@ public class CommitsCommand implements CommandMarker {
         totalBytesWritten += stat.getTotalWriteBytes();
         totalWriteErrors += stat.getTotalWriteErrors();
       }
-      rows.add(new Comparable[] {path, totalFilesAdded, totalFilesUpdated, totalRecordsInserted, totalRecordsUpdated,
+      rows.add(new Comparable[]{path, totalFilesAdded, totalFilesUpdated,
+          totalRecordsInserted, totalRecordsUpdated,
           totalBytesWritten, totalWriteErrors});
     }
 
@@ -185,21 +195,26 @@ public class CommitsCommand implements CommandMarker {
       return NumericUtils.humanReadableByteCount((Long.valueOf(entry.toString())));
     });
 
-    TableHeader header = new TableHeader().addTableHeaderField("Partition Path")
-        .addTableHeaderField("Total Files Added").addTableHeaderField("Total Files Updated")
-        .addTableHeaderField("Total Records Inserted").addTableHeaderField("Total Records Updated")
-        .addTableHeaderField("Total Bytes Written").addTableHeaderField("Total Errors");
+    TableHeader header = new TableHeader()
+        .addTableHeaderField("Partition Path")
+        .addTableHeaderField("Total Files Added")
+        .addTableHeaderField("Total Files Updated")
+        .addTableHeaderField("Total Records Inserted")
+        .addTableHeaderField("Total Records Updated")
+        .addTableHeaderField("Total Bytes Written")
+        .addTableHeaderField("Total Errors");
 
     return HoodiePrintHelper.print(header, fieldNameToConverterMap, sortByField, descending, limit, headerOnly, rows);
   }
 
   @CliCommand(value = "commit showfiles", help = "Show file level details of a commit")
-  public String showCommitFiles(@CliOption(key = {"commit"}, help = "Commit to show") final String commitTime,
+  public String showCommitFiles(
+      @CliOption(key = {"commit"}, help = "Commit to show") final String commitTime,
       @CliOption(key = {"limit"}, help = "Limit commits", unspecifiedDefaultValue = "-1") final Integer limit,
       @CliOption(key = {"sortBy"}, help = "Sorting Field", unspecifiedDefaultValue = "") final String sortByField,
       @CliOption(key = {"desc"}, help = "Ordering", unspecifiedDefaultValue = "false") final boolean descending,
-      @CliOption(key = {"headeronly"}, help = "Print Header Only",
-          unspecifiedDefaultValue = "false") final boolean headerOnly)
+      @CliOption(key = {
+          "headeronly"}, help = "Print Header Only", unspecifiedDefaultValue = "false") final boolean headerOnly)
       throws Exception {
 
     HoodieActiveTimeline activeTimeline = HoodieCLI.tableMetadata.getActiveTimeline();
@@ -216,15 +231,23 @@ public class CommitsCommand implements CommandMarker {
       String path = entry.getKey();
       List<HoodieWriteStat> stats = entry.getValue();
       for (HoodieWriteStat stat : stats) {
-        rows.add(new Comparable[] {path, stat.getFileId(), stat.getPrevCommit(), stat.getNumUpdateWrites(),
-            stat.getNumWrites(), stat.getTotalWriteBytes(), stat.getTotalWriteErrors(), stat.getFileSizeInBytes()});
+        rows.add(new Comparable[]{path, stat.getFileId(), stat.getPrevCommit(), stat.getNumUpdateWrites(),
+            stat.getNumWrites(), stat.getTotalWriteBytes(),
+            stat.getTotalWriteErrors(),
+            stat.getFileSizeInBytes()
+        });
       }
     }
 
-    TableHeader header = new TableHeader().addTableHeaderField("Partition Path").addTableHeaderField("File ID")
-        .addTableHeaderField("Previous Commit").addTableHeaderField("Total Records Updated")
-        .addTableHeaderField("Total Records Written").addTableHeaderField("Total Bytes Written")
-        .addTableHeaderField("Total Errors").addTableHeaderField("File Size");
+    TableHeader header = new TableHeader()
+        .addTableHeaderField("Partition Path")
+        .addTableHeaderField("File ID")
+        .addTableHeaderField("Previous Commit")
+        .addTableHeaderField("Total Records Updated")
+        .addTableHeaderField("Total Records Written")
+        .addTableHeaderField("Total Bytes Written")
+        .addTableHeaderField("Total Errors")
+        .addTableHeaderField("File Size");
 
     return HoodiePrintHelper.print(header, new HashMap<>(), sortByField, descending, limit, headerOnly, rows);
   }
@@ -247,8 +270,8 @@ public class CommitsCommand implements CommandMarker {
     String sourceLatestCommit =
         sourceTimeline.getInstants().iterator().hasNext() ? "0" : sourceTimeline.lastInstant().get().getTimestamp();
 
-    if (sourceLatestCommit != null
-        && HoodieTimeline.compareTimestamps(targetLatestCommit, sourceLatestCommit, HoodieTimeline.GREATER)) {
+    if (sourceLatestCommit != null && HoodieTimeline.compareTimestamps(targetLatestCommit, sourceLatestCommit,
+        HoodieTimeline.GREATER)) {
       // source is behind the target
       List<String> commitsToCatchup = targetTimeline.findInstantsAfter(sourceLatestCommit, Integer.MAX_VALUE)
           .getInstants().map(HoodieInstant::getTimestamp).collect(Collectors.toList());

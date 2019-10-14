@@ -24,7 +24,8 @@ import org.apache.hudi.common.util.TypedProperties;
 import org.apache.hudi.exception.HoodieException;
 
 /**
- * Simple key generator, which takes names of fields to be used for recordKey and partitionPath as configs.
+ * Simple key generator, which takes names of fields to be used for recordKey and partitionPath as
+ * configs.
  */
 public class SimpleKeyGenerator extends KeyGenerator {
 
@@ -37,13 +38,15 @@ public class SimpleKeyGenerator extends KeyGenerator {
   public SimpleKeyGenerator(TypedProperties props) {
     super(props);
     this.recordKeyField = props.getString(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY());
-    this.partitionPathField = props.getString(DataSourceWriteOptions.PARTITIONPATH_FIELD_OPT_KEY());
+    this.partitionPathField = props
+        .getString(DataSourceWriteOptions.PARTITIONPATH_FIELD_OPT_KEY());
   }
 
   @Override
   public HoodieKey getKey(GenericRecord record) {
     if (recordKeyField == null || partitionPathField == null) {
-      throw new HoodieException("Unable to find field names for record key or partition path in cfg");
+      throw new HoodieException(
+          "Unable to find field names for record key or partition path in cfg");
     }
 
     String recordKey = DataSourceUtils.getNestedFieldValAsString(record, recordKeyField);

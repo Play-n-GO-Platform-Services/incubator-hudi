@@ -21,9 +21,7 @@ package org.apache.hudi.exception;
 import java.io.IOException;
 
 /**
- * <p>
- * Exception thrown for dataset IO-related failures.
- * </p>
+ * <p> Exception thrown for dataset IO-related failures. </p>
  */
 public class HoodieIOException extends HoodieException {
 

@@ -19,7 +19,8 @@
 package org.apache.hudi.common.table.log;
 
 /**
- * Implements logic to determine behavior for feature flags for {@link HoodieLogFormat.LogFormatVersion}.
+ * Implements logic to determine behavior for feature flags for
+ * {@link HoodieLogFormat.LogFormatVersion}.
  */
 final class HoodieLogFormatVersion extends HoodieLogFormat.LogFormatVersion {
 

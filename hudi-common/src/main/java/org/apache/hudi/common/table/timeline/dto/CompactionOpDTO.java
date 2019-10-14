@@ -55,7 +55,8 @@ public class CompactionOpDTO {
   @JsonProperty("metrics")
   private Map<String, Double> metrics;
 
-  public static CompactionOpDTO fromCompactionOperation(String compactionInstantTime, CompactionOperation op) {
+  public static CompactionOpDTO fromCompactionOperation(String compactionInstantTime,
+      CompactionOperation op) {
     CompactionOpDTO dto = new CompactionOpDTO();
     dto.fileId = op.getFileId();
     dto.compactionInstantTime = compactionInstantTime;
@@ -69,9 +70,8 @@ public class CompactionOpDTO {
   }
 
   public static Pair<String, CompactionOperation> toCompactionOperation(CompactionOpDTO dto) {
-    return Pair.of(dto.compactionInstantTime,
-        new CompactionOperation(dto.fileId, dto.partitionPath, dto.baseInstantTime,
-            Option.ofNullable(dto.dataFileCommitTime), dto.deltaFilePaths, Option.ofNullable(dto.dataFilePath),
-            dto.metrics));
+    return Pair.of(dto.compactionInstantTime, new CompactionOperation(dto.fileId, dto.partitionPath,
+        dto.baseInstantTime, Option.ofNullable(dto.dataFileCommitTime), dto.deltaFilePaths,
+        Option.ofNullable(dto.dataFilePath), dto.metrics));
   }
 }

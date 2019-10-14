@@ -41,9 +41,10 @@ public class HoodieRealtimeFileSplit extends FileSplit {
     super();
   }
 
-  public HoodieRealtimeFileSplit(FileSplit baseSplit, String basePath, List<String> deltaLogFiles, String maxCommitTime)
-      throws IOException {
-    super(baseSplit.getPath(), baseSplit.getStart(), baseSplit.getLength(), baseSplit.getLocations());
+  public HoodieRealtimeFileSplit(FileSplit baseSplit, String basePath, List<String> deltaLogFiles,
+      String maxCommitTime) throws IOException {
+    super(baseSplit.getPath(), baseSplit.getStart(), baseSplit.getLength(),
+        baseSplit.getLocations());
     this.deltaFilePaths = deltaLogFiles;
     this.maxCommitTime = maxCommitTime;
     this.basePath = basePath;
@@ -99,7 +100,11 @@ public class HoodieRealtimeFileSplit extends FileSplit {
 
   @Override
   public String toString() {
-    return "HoodieRealtimeFileSplit{" + "DataPath=" + getPath() + ", deltaFilePaths=" + deltaFilePaths
-        + ", maxCommitTime='" + maxCommitTime + '\'' + ", basePath='" + basePath + '\'' + '}';
+    return "HoodieRealtimeFileSplit{"
+        + "DataPath=" + getPath()
+        + ", deltaFilePaths=" + deltaFilePaths
+        + ", maxCommitTime='" + maxCommitTime + '\''
+        + ", basePath='" + basePath + '\''
+        + '}';
   }
 }

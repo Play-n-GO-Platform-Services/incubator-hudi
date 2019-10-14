@@ -27,14 +27,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import org.apache.hudi.common.HoodieCommonTestHarness;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-public class TestFileIOUtils extends HoodieCommonTestHarness {
+public class TestFileIOUtils {
 
   @Test
   public void testMkdirAndDelete() throws IOException {
+    TemporaryFolder folder = new TemporaryFolder();
+    folder.create();
     try {
       FileIOUtils.mkdir(folder.getRoot());
     } catch (IOException e) {

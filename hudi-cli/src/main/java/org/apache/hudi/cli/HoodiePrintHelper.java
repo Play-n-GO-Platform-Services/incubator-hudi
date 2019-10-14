@@ -52,16 +52,19 @@ public class HoodiePrintHelper {
    * @param rows List of rows
    * @return Serialized form for printing
    */
-  public static String print(TableHeader rowHeader, Map<String, Function<Object, String>> fieldNameToConverterMap,
-      String sortByField, boolean isDescending, Integer limit, boolean headerOnly, List<Comparable[]> rows) {
+  public static String print(TableHeader rowHeader,
+      Map<String, Function<Object, String>> fieldNameToConverterMap,
+      String sortByField, boolean isDescending, Integer limit, boolean headerOnly,
+      List<Comparable[]> rows) {
 
     if (headerOnly) {
       return HoodiePrintHelper.print(rowHeader);
     }
 
-    Table table =
-        new Table(rowHeader, fieldNameToConverterMap, Option.ofNullable(sortByField.isEmpty() ? null : sortByField),
-            Option.ofNullable(isDescending), Option.ofNullable(limit <= 0 ? null : limit)).addAllRows(rows).flip();
+    Table table = new Table(rowHeader, fieldNameToConverterMap,
+        Option.ofNullable(sortByField.isEmpty() ? null : sortByField),
+        Option.ofNullable(isDescending),
+        Option.ofNullable(limit <= 0 ? null : limit)).addAllRows(rows).flip();
 
     return HoodiePrintHelper.print(table);
   }
@@ -76,8 +79,9 @@ public class HoodiePrintHelper {
     String[] header = new String[buffer.getFieldNames().size()];
     buffer.getFieldNames().toArray(header);
 
-    String[][] rows =
-        buffer.getRenderRows().stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
+    String[][] rows = buffer.getRenderRows().stream()
+        .map(l -> l.stream().toArray(String[]::new))
+        .toArray(String[][]::new);
     return printTextTable(header, rows);
   }
 
@@ -90,7 +94,7 @@ public class HoodiePrintHelper {
   private static String print(TableHeader header) {
     String[] head = new String[header.getFieldNames().size()];
     header.getFieldNames().toArray(head);
-    return printTextTable(head, new String[][] {});
+    return printTextTable(head, new String[][]{});
   }
 
   /**

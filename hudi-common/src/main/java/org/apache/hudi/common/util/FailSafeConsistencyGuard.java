@@ -51,11 +51,12 @@ public class FailSafeConsistencyGuard implements ConsistencyGuard {
 
   @Override
   public void waitTillFileAppears(Path filePath) throws TimeoutException {
-    waitForFileVisibility(filePath, FileVisibility.APPEAR);
+    waitForFileVisibility(filePath,  FileVisibility.APPEAR);
   }
 
   @Override
-  public void waitTillFileDisappears(Path filePath) throws TimeoutException {
+  public void waitTillFileDisappears(Path filePath)
+      throws TimeoutException {
     waitForFileVisibility(filePath, FileVisibility.DISAPPEAR);
   }
 
@@ -71,13 +72,13 @@ public class FailSafeConsistencyGuard implements ConsistencyGuard {
 
   /**
    * Helper function to wait for all files belonging to single directory to appear
-   * 
    * @param dirPath Dir Path
    * @param files Files to appear/disappear
    * @param event Appear/Disappear
    * @throws TimeoutException
    */
-  public void waitForFilesVisibility(String dirPath, List<String> files, FileVisibility event) throws TimeoutException {
+  public void waitForFilesVisibility(String dirPath, List<String> files, FileVisibility event)
+      throws TimeoutException {
     Path dir = new Path(dirPath);
     List<String> filesWithoutSchemeAndAuthority =
         files.stream().map(f -> Path.getPathWithoutSchemeAndAuthority(new Path(f))).map(p -> p.toString())
@@ -111,7 +112,6 @@ public class FailSafeConsistencyGuard implements ConsistencyGuard {
 
   /**
    * Helper to check of file visibility
-   * 
    * @param filePath File Path
    * @param visibility Visibility
    * @return
@@ -140,7 +140,6 @@ public class FailSafeConsistencyGuard implements ConsistencyGuard {
 
   /**
    * Helper function to wait till file either appears/disappears
-   * 
    * @param filePath File Path
    * @param visibility
    * @throws TimeoutException
@@ -167,7 +166,6 @@ public class FailSafeConsistencyGuard implements ConsistencyGuard {
 
   /**
    * Retries the predicate for condfigurable number of times till we the predicate returns success
-   * 
    * @param predicate Predicate Function
    * @param timedOutMessage Timed-Out message for logging
    * @throws TimeoutException when retries are exhausted

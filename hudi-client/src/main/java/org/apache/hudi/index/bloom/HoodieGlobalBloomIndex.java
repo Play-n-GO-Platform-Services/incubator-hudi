@@ -59,8 +59,9 @@ public class HoodieGlobalBloomIndex<T extends HoodieRecordPayload> extends Hoodi
       final HoodieTable hoodieTable) {
     HoodieTableMetaClient metaClient = hoodieTable.getMetaClient();
     try {
-      List<String> allPartitionPaths = FSUtils.getAllPartitionPaths(metaClient.getFs(), metaClient.getBasePath(),
-          config.shouldAssumeDatePartitioning());
+      List<String> allPartitionPaths = FSUtils
+          .getAllPartitionPaths(metaClient.getFs(), metaClient.getBasePath(),
+              config.shouldAssumeDatePartitioning());
       return super.loadInvolvedFiles(allPartitionPaths, jsc, hoodieTable);
     } catch (IOException e) {
       throw new HoodieIOException("Failed to load all partitions", e);
@@ -87,9 +88,9 @@ public class HoodieGlobalBloomIndex<T extends HoodieRecordPayload> extends Hoodi
       entry.getValue().forEach(indexFile -> indexToPartitionMap.put(indexFile.getFileId(), entry.getKey()));
     }
 
-    IndexFileFilter indexFileFilter =
-        config.getBloomIndexPruneByRanges() ? new IntervalTreeBasedGlobalIndexFileFilter(partitionToFileIndexInfo)
-            : new ListBasedGlobalIndexFileFilter(partitionToFileIndexInfo);
+    IndexFileFilter indexFileFilter = config.getBloomIndexPruneByRanges()
+        ? new IntervalTreeBasedGlobalIndexFileFilter(partitionToFileIndexInfo)
+        : new ListBasedGlobalIndexFileFilter(partitionToFileIndexInfo);
 
     return partitionRecordKeyPairRDD.map(partitionRecordKeyPair -> {
       String recordKey = partitionRecordKeyPair._2();
@@ -108,8 +109,8 @@ public class HoodieGlobalBloomIndex<T extends HoodieRecordPayload> extends Hoodi
   @Override
   protected JavaRDD<HoodieRecord<T>> tagLocationBacktoRecords(
       JavaPairRDD<HoodieKey, HoodieRecordLocation> keyFilenamePairRDD, JavaRDD<HoodieRecord<T>> recordRDD) {
-    JavaPairRDD<String, HoodieRecord<T>> rowKeyRecordPairRDD =
-        recordRDD.mapToPair(record -> new Tuple2<>(record.getRecordKey(), record));
+    JavaPairRDD<String, HoodieRecord<T>> rowKeyRecordPairRDD = recordRDD
+        .mapToPair(record -> new Tuple2<>(record.getRecordKey(), record));
 
     // Here as the recordRDD might have more data than rowKeyRDD (some rowKeys' fileId is null),
     // so we do left outer join.

@@ -27,7 +27,6 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hudi.common.HoodieCommonTestHarness;
 import org.apache.hudi.common.HoodieTestDataGenerator;
 import org.apache.hudi.common.model.HoodieTestUtils;
 import org.apache.hudi.common.util.FSUtils;
@@ -36,8 +35,9 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-public class TestHoodieSnapshotCopier extends HoodieCommonTestHarness {
+public class TestHoodieSnapshotCopier {
 
   private static String TEST_WRITE_TOKEN = "1-0-1";
 
@@ -49,17 +49,23 @@ public class TestHoodieSnapshotCopier extends HoodieCommonTestHarness {
 
   @Before
   public void init() throws IOException {
-    // Prepare directories
-    rootPath = "file://" + folder.getRoot().getAbsolutePath();
-    basePath = rootPath + "/" + HoodieTestUtils.RAW_TRIPS_TEST_NAME;
-    outputPath = rootPath + "/output";
+    try {
+      // Prepare directories
+      TemporaryFolder folder = new TemporaryFolder();
+      folder.create();
+      rootPath = "file://" + folder.getRoot().getAbsolutePath();
+      basePath = rootPath + "/" + HoodieTestUtils.RAW_TRIPS_TEST_NAME;
+      outputPath = rootPath + "/output";
 
-    final Configuration hadoopConf = HoodieTestUtils.getDefaultHadoopConf();
-    fs = FSUtils.getFs(basePath, hadoopConf);
-    HoodieTestUtils.init(hadoopConf, basePath);
-    // Start a local Spark job
-    SparkConf conf = new SparkConf().setAppName("snapshot-test-job").setMaster("local[2]");
-    jsc = new JavaSparkContext(conf);
+      final Configuration hadoopConf = HoodieTestUtils.getDefaultHadoopConf();
+      fs = FSUtils.getFs(basePath, hadoopConf);
+      HoodieTestUtils.init(hadoopConf, basePath);
+      // Start a local Spark job
+      SparkConf conf = new SparkConf().setAppName("snapshot-test-job").setMaster("local[2]");
+      jsc = new JavaSparkContext(conf);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Test
@@ -77,8 +83,8 @@ public class TestHoodieSnapshotCopier extends HoodieCommonTestHarness {
     assertFalse(fs.exists(new Path(outputPath + "/_SUCCESS")));
   }
 
-  // TODO - uncomment this after fixing test failures
-  // @Test
+  //TODO - uncomment this after fixing test failures
+  //@Test
   public void testSnapshotCopy() throws Exception {
     // Generate some commits and corresponding parquets
     String commitTime1 = "20160501010101";
@@ -95,30 +101,40 @@ public class TestHoodieSnapshotCopier extends HoodieCommonTestHarness {
     new File(basePath + "/2016/05/01/").mkdirs();
     new File(basePath + "/2016/05/02/").mkdirs();
     new File(basePath + "/2016/05/06/").mkdirs();
-    HoodieTestDataGenerator.writePartitionMetadata(fs, new String[] {"2016/05/01", "2016/05/02", "2016/05/06"},
-        basePath);
+    HoodieTestDataGenerator
+        .writePartitionMetadata(fs, new String[] {"2016/05/01", "2016/05/02", "2016/05/06"},
+            basePath);
     // Make commit1
-    File file11 = new File(basePath + "/2016/05/01/" + FSUtils.makeDataFileName(commitTime1, TEST_WRITE_TOKEN, "id11"));
+    File file11 = new File(
+        basePath + "/2016/05/01/" + FSUtils.makeDataFileName(commitTime1, TEST_WRITE_TOKEN, "id11"));
     file11.createNewFile();
-    File file12 = new File(basePath + "/2016/05/02/" + FSUtils.makeDataFileName(commitTime1, TEST_WRITE_TOKEN, "id12"));
+    File file12 = new File(
+        basePath + "/2016/05/02/" + FSUtils.makeDataFileName(commitTime1, TEST_WRITE_TOKEN, "id12"));
     file12.createNewFile();
-    File file13 = new File(basePath + "/2016/05/06/" + FSUtils.makeDataFileName(commitTime1, TEST_WRITE_TOKEN, "id13"));
+    File file13 = new File(
+        basePath + "/2016/05/06/" + FSUtils.makeDataFileName(commitTime1, TEST_WRITE_TOKEN, "id13"));
     file13.createNewFile();
 
     // Make commit2
-    File file21 = new File(basePath + "/2016/05/01/" + FSUtils.makeDataFileName(commitTime2, TEST_WRITE_TOKEN, "id21"));
+    File file21 = new File(
+        basePath + "/2016/05/01/" + FSUtils.makeDataFileName(commitTime2, TEST_WRITE_TOKEN, "id21"));
     file21.createNewFile();
-    File file22 = new File(basePath + "/2016/05/02/" + FSUtils.makeDataFileName(commitTime2, TEST_WRITE_TOKEN, "id22"));
+    File file22 = new File(
+        basePath + "/2016/05/02/" + FSUtils.makeDataFileName(commitTime2, TEST_WRITE_TOKEN, "id22"));
     file22.createNewFile();
-    File file23 = new File(basePath + "/2016/05/06/" + FSUtils.makeDataFileName(commitTime2, TEST_WRITE_TOKEN, "id23"));
+    File file23 = new File(
+        basePath + "/2016/05/06/" + FSUtils.makeDataFileName(commitTime2, TEST_WRITE_TOKEN, "id23"));
     file23.createNewFile();
 
     // Make commit3
-    File file31 = new File(basePath + "/2016/05/01/" + FSUtils.makeDataFileName(commitTime3, TEST_WRITE_TOKEN, "id31"));
+    File file31 = new File(
+        basePath + "/2016/05/01/" + FSUtils.makeDataFileName(commitTime3, TEST_WRITE_TOKEN, "id31"));
     file31.createNewFile();
-    File file32 = new File(basePath + "/2016/05/02/" + FSUtils.makeDataFileName(commitTime3, TEST_WRITE_TOKEN, "id32"));
+    File file32 = new File(
+        basePath + "/2016/05/02/" + FSUtils.makeDataFileName(commitTime3, TEST_WRITE_TOKEN, "id32"));
     file32.createNewFile();
-    File file33 = new File(basePath + "/2016/05/06/" + FSUtils.makeDataFileName(commitTime3, TEST_WRITE_TOKEN, "id33"));
+    File file33 = new File(
+        basePath + "/2016/05/06/" + FSUtils.makeDataFileName(commitTime3, TEST_WRITE_TOKEN, "id33"));
     file33.createNewFile();
 
     // Do a snapshot copy

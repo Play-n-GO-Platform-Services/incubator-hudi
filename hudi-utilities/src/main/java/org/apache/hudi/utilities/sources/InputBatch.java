@@ -27,7 +27,8 @@ public class InputBatch<T> {
   private final String checkpointForNextBatch;
   private final SchemaProvider schemaProvider;
 
-  public InputBatch(Option<T> batch, String checkpointForNextBatch, SchemaProvider schemaProvider) {
+  public InputBatch(Option<T> batch, String checkpointForNextBatch,
+      SchemaProvider schemaProvider) {
     this.batch = batch;
     this.checkpointForNextBatch = checkpointForNextBatch;
     this.schemaProvider = schemaProvider;

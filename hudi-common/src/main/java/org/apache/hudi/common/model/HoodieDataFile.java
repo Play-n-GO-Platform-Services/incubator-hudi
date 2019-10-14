@@ -93,6 +93,9 @@ public class HoodieDataFile implements Serializable {
 
   @Override
   public String toString() {
-    return "HoodieDataFile{" + "fullPath=" + fullPath + ", fileLen=" + fileLen + '}';
+    return "HoodieDataFile{"
+        + "fullPath=" + fullPath
+        + ", fileLen=" + fileLen
+        + '}';
   }
 }

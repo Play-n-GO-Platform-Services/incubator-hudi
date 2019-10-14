@@ -35,14 +35,15 @@ public class TestHoodieIndex extends HoodieClientTestHarness {
   @Before
   public void setUp() throws Exception {
     initSparkContexts("TestHoodieIndex");
-    initPath();
-    initMetaClient();
+    initTempFolderAndPath();
+    initTableType();
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws Exception {
     cleanupSparkContexts();
-    cleanupMetaClient();
+    cleanupTempFolderAndPath();
+    cleanupTableType();
   }
 
   @Test
@@ -50,10 +51,9 @@ public class TestHoodieIndex extends HoodieClientTestHarness {
     HoodieWriteConfig.Builder clientConfigBuilder = HoodieWriteConfig.newBuilder();
     HoodieIndexConfig.Builder indexConfigBuilder = HoodieIndexConfig.newBuilder();
     // Different types
-    HoodieWriteConfig config = clientConfigBuilder.withPath(basePath)
-        .withIndexConfig(indexConfigBuilder.withIndexType(HoodieIndex.IndexType.HBASE)
-            .withHBaseIndexConfig(new HoodieHBaseIndexConfig.Builder().build()).build())
-        .build();
+    HoodieWriteConfig config = clientConfigBuilder.withPath(basePath).withIndexConfig(
+        indexConfigBuilder.withIndexType(HoodieIndex.IndexType.HBASE)
+            .withHBaseIndexConfig(new HoodieHBaseIndexConfig.Builder().build()).build()).build();
     assertTrue(HoodieIndex.createIndex(config, jsc) instanceof HBaseIndex);
     config = clientConfigBuilder.withPath(basePath)
         .withIndexConfig(indexConfigBuilder.withIndexType(HoodieIndex.IndexType.INMEMORY).build()).build();
