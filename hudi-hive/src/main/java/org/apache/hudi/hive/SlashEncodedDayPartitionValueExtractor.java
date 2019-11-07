@@ -50,10 +50,14 @@ public class SlashEncodedDayPartitionValueExtractor implements PartitionValueExt
   public List<String> extractPartitionValuesInPath(String partitionPath) {
     // partition path is expected to be in this format yyyy/mm/dd
     String[] splits = partitionPath.split("/");
-    if (splits.length != 3) {
-      throw new IllegalArgumentException(
-              "Partition path " + partitionPath + " is not in the form yyyy/mm/dd or opname/yyyy/mm/dd");
-    } else  {
+    if (splits.length > 3) {
+      String opName = splits[0];
+      int year = Integer.parseInt(splits[1]);
+      int mm = Integer.parseInt(splits[2]);
+      int dd = Integer.parseInt(splits[3]);
+      DateTime dateTime = new DateTime(year, mm, dd, 0, 0);
+      return Lists.newArrayList(opName, getDtfOut().print(dateTime));
+    } else if (splits.length == 3) {
       // Get the partition part and remove the / as well at the end
       int year = Integer.parseInt(splits[0]);
       int mm = Integer.parseInt(splits[1]);
@@ -61,7 +65,10 @@ public class SlashEncodedDayPartitionValueExtractor implements PartitionValueExt
       DateTime dateTime = new DateTime(year, mm, dd, 0, 0);
       return Lists.newArrayList(getDtfOut().print(dateTime));
     }
-
+    else{
+      throw new IllegalArgumentException(
+              "Partition path " + partitionPath + " is not in the form yyyy/mm/dd or opname/yyyy/mm/dd");
+    }
 
   }
 
