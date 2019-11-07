@@ -55,10 +55,11 @@ public class SlashEncodedDayPartitionValueExtractor implements PartitionValueExt
           "Partition path " + partitionPath + " is not in the form yyyy/mm/dd ");
     }
     // Get the partition part and remove the / as well at the end
-    int year = Integer.parseInt(splits[0]);
-    int mm = Integer.parseInt(splits[1]);
-    int dd = Integer.parseInt(splits[2]);
+    String opName = splits[0];
+    int year = Integer.parseInt(splits[1]);
+    int mm = Integer.parseInt(splits[2]);
+    int dd = Integer.parseInt(splits[3]);
     DateTime dateTime = new DateTime(year, mm, dd, 0, 0);
-    return Lists.newArrayList(getDtfOut().print(dateTime));
+    return Lists.newArrayList(opName, getDtfOut().print(dateTime));
   }
 }
