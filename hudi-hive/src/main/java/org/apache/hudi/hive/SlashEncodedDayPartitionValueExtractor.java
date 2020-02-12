@@ -22,7 +22,6 @@ import com.beust.jcommander.internal.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -53,8 +52,8 @@ public class SlashEncodedDayPartitionValueExtractor implements PartitionValueExt
   public List<String> extractPartitionValuesInPath(String partitionPath) {
     String[] splits = partitionPath.split("/");
     ArrayList<String> al = new ArrayList<String>();
-    for(int i = 0; i <= splits.length -1 ; i++ ){
-        al.add(splits[i]);
+    for (int i = 0; i <= splits.length - 1; i++) {
+      al.add(splits[i]);
     }
     return Lists.newArrayList(al);
   }

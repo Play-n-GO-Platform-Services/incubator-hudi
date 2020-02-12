@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -202,7 +201,7 @@ public class HoodieHiveClient {
     Map<String, String> paths = Maps.newHashMap();
     for (Partition tablePartition : tablePartitions) {
       List<String> hivePartitionValues = tablePartition.getValues();
-      Collections.sort(hivePartitionValues);
+      // Collections.sort(hivePartitionValues);
       String fullTablePartitionPath = Path.getPathWithoutSchemeAndAuthority(
           new Path(tablePartition.getSd().getLocation())).toUri().getPath();
       paths.put(String.join(", ", hivePartitionValues), fullTablePartitionPath);
@@ -214,7 +213,7 @@ public class HoodieHiveClient {
       // Check if the partition values or if hdfs path is the same
       List<String> storagePartitionValues = partitionValueExtractor
           .extractPartitionValuesInPath(storagePartition);
-      Collections.sort(storagePartitionValues);
+      // Collections.sort(storagePartitionValues);
       if (!storagePartitionValues.isEmpty()) {
         String storageValue = String.join(", ", storagePartitionValues);
         if (!paths.containsKey(storageValue)) {
